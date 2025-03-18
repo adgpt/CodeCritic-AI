@@ -4,13 +4,17 @@
 
 CodeCritic-AI is an intelligent code review assistant that provides instant, AI-powered feedback on your code. Built with modern web technologies, it helps developers identify potential issues, suggest improvements, and maintain high code quality standards.
 
+## Development Approach
+
+This project embraces modern development practices, including the use of AI assistance in its creation. While AI tools were utilized to enhance the development process, all code and features have been carefully reviewed, modified, and validated with human intervention to ensure quality, security, and optimal functionality.
+
 ## Features
 
-- Real-time code analysis
-- Intelligent feedback and suggestions
-- Modern, intuitive interface
-- Support for multiple programming languages
-- Detailed code quality insights
+- Real-time code analysis and feedback with AI-powered insights
+- Secure authentication with Google and GitHub OAuth via Supabase
+- Modern, intuitive interface built with shadcn-ui and Tailwind CSS
+- Code editor with syntax highlighting for common programming languages
+- Error and warning detection in code analysis
 
 ## Getting Started
 
@@ -24,17 +28,34 @@ Follow these steps to set up the project locally:
 
 ```sh
 # Step 1: Clone the repository
-git clone <YOUR_GIT_URL>
+git clone https://github.com/adgpt/CodeCritic-AI.git
 
 # Step 2: Navigate to the project directory
-cd <YOUR_PROJECT_NAME>
+cd CodeCritic-AI
 
 # Step 3: Install dependencies
-npm i
+npm install
 
-# Step 4: Start the development server
+# Step 4: Configure environment variables
+cp .env.example .env
+# Update .env with your API keys
+
+# Step 5: Start the development server
 npm run dev
 ```
+
+## Environment Configuration
+
+This project requires several environment variables to be set up for proper functionality. Create a `.env` file in the root directory using `.env.example` as a template:
+
+```sh
+VITE_SUPABASE_URL=your_supabase_url_here
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+- `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`: Get these from your Supabase project settings
+- `VITE_GEMINI_API_KEY`: Obtain from Google AI Studio
 
 ## Development Options
 
@@ -47,15 +68,6 @@ You can work with any IDE of your choice. After cloning the repository, you can 
 - Navigate to the desired file(s)
 - Click the "Edit" button (pencil icon)
 - Make your changes and commit them
-
-### Using GitHub Codespaces
-
-1. Navigate to the repository's main page
-2. Click the "Code" button
-3. Select the "Codespaces" tab
-4. Click "New codespace"
-5. Make changes in the Codespace environment
-6. Commit and push your changes
 
 ## Technology Stack
 
@@ -81,3 +93,14 @@ Each platform offers straightforward deployment processes - choose the one that 
 ## Contributing
 
 Contributions are welcome! Feel free to submit issues and enhancement requests.
+
+## Future Updates
+
+We are continuously working to enhance CodeCritic-AI. Here are some planned features:
+
+- **User Profile Management** - Personalized settings and preferences for code review experience
+- **Code Review History** - Track and manage your code review history and improvements over time
+- **Language-Specific Linting** - Custom linting rules and best practices for different programming languages
+- **Team Collaboration** - Enhanced features for team-based code reviews and feedback sharing
+- **Performance Optimization** - Improved analysis speed and resource utilization
+- **Integration Ecosystem** - Support for additional version control systems and IDE plugins

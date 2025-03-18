@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from "@/lib/utils";
-import { AlertTriangle, CheckCircle, Info, Code, Download } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Info, FileCode, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface ReviewSummaryProps {
@@ -79,7 +79,7 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({ loading, review, classNam
           <span className="font-medium text-sm">AI Review Summary</span>
         </div>
         <div className="p-6 flex flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] text-muted-foreground">
-          <Code size={48} className="mb-4 opacity-50" />
+          <FileCode size={48} className="mb-4 opacity-50" />
           <p className="text-center">Run the analysis to get a code review summary</p>
         </div>
       </div>

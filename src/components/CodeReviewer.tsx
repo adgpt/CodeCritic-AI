@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import CodeEditor from '@/components/CodeEditor';
 import ReviewSummary from '@/components/ReviewSummary';
-import { Play } from 'lucide-react';
+import { LogOut, Play } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { analyzeCode } from '@/services/codeAnalysisService';
 
 const CodeReviewer: React.FC = () => {
@@ -18,6 +20,8 @@ const CodeReviewer: React.FC = () => {
   }>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { signOut, profile } = useAuth();
+  const navigate = useNavigate();
 
   const handleAnalysis = async () => {
     if (!code.trim()) {
@@ -34,7 +38,7 @@ const CodeReviewer: React.FC = () => {
     try {
       const result = await analyzeCode(code);
       setReview(result);
-    } catch (error: any) {
+    } catch (error: Error) {
       console.error("Error analyzing code:", error);
       toast({
         title: "Analysis failed",
@@ -57,13 +61,38 @@ const CodeReviewer: React.FC = () => {
   return (
     <div className="min-h-screen p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col">
       <header className="responsive-container mb-8 animate-fade-in">
-        <div className="inline-block mb-2 py-1 px-3 bg-primary/10 text-primary rounded-full text-xs font-medium">
-          AI-Powered
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <div className="inline-block mb-2 py-1 px-3 bg-primary/10 text-primary rounded-full text-xs font-medium">
+              AI-Powered
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">Code Reviewer</h1>
+            <p className="text-muted-foreground">
+              Get instant feedback on your code with our AI code review assistant
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">{profile?.full_name}</span>
+            <button
+              onClick={async () => {
+                try {
+                  await signOut();
+                  navigate('/login');
+                } catch (error) {
+                  toast({
+                    title: "Logout failed",
+                    description: "Failed to sign out. Please try again.",
+                    variant: "destructive",
+                  });
+                }
+              }}
+              className="p-2 hover:bg-accent rounded-full transition-colors"
+              title="Logout"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          </div>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">Code Reviewer</h1>
-        <p className="text-muted-foreground">
-          Get instant feedback on your code with our AI code review assistant
-        </p>
       </header>
       
       <main className="responsive-container flex-grow grid gap-6 
