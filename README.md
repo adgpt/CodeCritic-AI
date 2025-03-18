@@ -24,13 +24,13 @@ Follow these steps to set up the project locally:
 
 ```sh
 # Step 1: Clone the repository
-git clone <YOUR_GIT_URL>
+git clone https://github.com/adgpt/CodeCritic-AI.git
 
 # Step 2: Navigate to the project directory
-cd <YOUR_PROJECT_NAME>
+cd CodeCritic-AI
 
 # Step 3: Install dependencies
-npm i
+npm install
 
 # Step 4: Start the development server
 npm run dev
@@ -47,15 +47,6 @@ You can work with any IDE of your choice. After cloning the repository, you can 
 - Navigate to the desired file(s)
 - Click the "Edit" button (pencil icon)
 - Make your changes and commit them
-
-### Using GitHub Codespaces
-
-1. Navigate to the repository's main page
-2. Click the "Code" button
-3. Select the "Codespaces" tab
-4. Click "New codespace"
-5. Make changes in the Codespace environment
-6. Commit and push your changes
 
 ## Technology Stack
 
