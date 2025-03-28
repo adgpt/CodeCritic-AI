@@ -23,18 +23,31 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
+
+function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   const updateUserProfile = async (user: User) => {
     try {
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile, error: fetchError } = await supabase
         .from('user_profiles')
-        .select('*')
-        .eq('id', user.id)
+        .select()
+        .match({ id: user.id })
         .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error('Error fetching user profile:', fetchError);
+        return;
+      }
 
       const updates = {
         id: user.id,
@@ -47,9 +60,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       let result;
       if (!existingProfile) {
-        result = await supabase.from('user_profiles').insert([
-          { ...updates, created_at: new Date().toISOString() },
-        ]);
+        result = await supabase.from('user_profiles').upsert({
+          ...updates,
+          created_at: new Date().toISOString(),
+        }, { onConflict: 'id' });
       } else {
         result = await supabase
           .from('user_profiles')
@@ -57,28 +71,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .eq('id', user.id);
       }
 
-      if (result.error) throw result.error;
+      if (result.error) {
+        console.error('Error updating user profile:', result.error);
+        return;
+      }
 
-      const { data: updatedProfile } = await supabase
+      const { data: updatedProfile, error: profileError } = await supabase
         .from('user_profiles')
-        .select('*')
-        .eq('id', user.id)
+        .select()
+        .match({ id: user.id })
         .single();
+
+      if (profileError) {
+        console.error('Error fetching updated profile:', profileError);
+        return;
+      }
 
       setProfile(updatedProfile);
     } catch (error) {
-      console.error('Error updating user profile:', error);
+      console.error('Error in profile update process:', error);
     }
   };
 
   useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    const initializeAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      
+      if (currentUser) {
+        await updateUserProfile(currentUser);
+      }
       setLoading(false);
-    });
+    };
 
-    // Listen for changes on auth state (sign in, sign out, etc.)
+    initializeAuth();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const currentUser = session?.user ?? null;
       setUser(currentUser);
@@ -97,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/`
+        redirectTo: `${window.location.origin}/dashboard`
       }
     });
     if (error) throw error;
@@ -107,7 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${window.location.origin}/`
+        redirectTo: `${window.location.origin}/dashboard`
       }
     });
     if (error) throw error;
@@ -125,10 +153,4 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
+export { AuthProvider, useAuth };

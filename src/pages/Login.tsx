@@ -56,7 +56,7 @@ export default function Login() {
           </CardHeader>
           <CardContent className="space-y-4 p-6">
             <Button
-              className="w-full h-11 text-base font-medium transition-all duration-200 bg-white text-gray-800 hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 hover:shadow-md"
+              className="w-full h-11 text-base font-medium transition-all duration-200 bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600 hover:shadow-md"
               onClick={handleGoogleSignIn}
               disabled={loading}
             >

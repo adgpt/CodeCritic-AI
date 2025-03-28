@@ -3,6 +3,40 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  
+  .gradient-button {
+    background: linear-gradient(to right, #4f46e5, #8b5cf6);
+    color: white;
+    transition: all 0.3s ease;
+  }
+  
+  .gradient-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+  }
+  
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .glass-panel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-accent-pink {
+    color: #ec4899;
+  }
+  
+  .text-accent-yellow {
+    color: #eab308;
+  }
+}
+
 @layer base {
   :root {
     --background: 210 40% 98%;

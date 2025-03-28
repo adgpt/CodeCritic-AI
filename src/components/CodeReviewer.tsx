@@ -6,6 +6,7 @@ import { LogOut, Play } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { analyzeCode } from '@/services/codeAnalysisService';
 
 const CodeReviewer: React.FC = () => {
@@ -38,11 +39,11 @@ const CodeReviewer: React.FC = () => {
     try {
       const result = await analyzeCode(code);
       setReview(result);
-    } catch (error: Error) {
+    } catch (error) {
       console.error("Error analyzing code:", error);
       toast({
         title: "Analysis failed",
-        description: error.message || "An error occurred during analysis",
+        description: error instanceof Error ? error.message : "An unexpected error occurred during analysis",
         variant: "destructive",
       });
       
@@ -50,7 +51,7 @@ const CodeReviewer: React.FC = () => {
         summary: "Error analyzing code",
         issues: [{ 
           type: 'error', 
-          message: error.message || "An unexpected error occurred during analysis." 
+          message: error instanceof Error ? error.message : "An unexpected error occurred during analysis." 
         }]
       });
     } finally {
@@ -73,6 +74,16 @@ const CodeReviewer: React.FC = () => {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">{profile?.full_name}</span>
+            <button
+              onClick={() => navigate('/profile')}
+              className="hover:opacity-80 transition-opacity"
+              title="View Profile"
+            >
+              <Avatar>
+                <AvatarImage src={profile?.avatar_url} alt={profile?.full_name || 'User'} />
+                <AvatarFallback>{profile?.full_name?.[0] || 'U'}</AvatarFallback>
+              </Avatar>
+            </button>
             <button
               onClick={async () => {
                 try {
